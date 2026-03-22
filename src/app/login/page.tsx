@@ -6,7 +6,7 @@ import { useState } from "react";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
-  const isLan = typeof window !== "undefined" && !window.location.hostname.match(/^(localhost|127\.0\.0\.1)$/);
+  const isLan = typeof window !== "undefined" && /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(window.location.hostname);
 
   const handleSignIn = async (provider: string) => {
     try {

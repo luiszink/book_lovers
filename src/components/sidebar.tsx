@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import {
   BookOpen,
+  Highlighter,
   Home,
   Upload,
   Users,
@@ -17,6 +18,7 @@ import { useState, useEffect } from "react";
 const navItems = [
   { href: "/", label: "Dashboard", icon: Home },
   { href: "/books", label: "Bibliothek", icon: BookOpen },
+  { href: "/highlights", label: "Highlights", icon: Highlighter },
   { href: "/groups", label: "Gruppen", icon: Users },
   { href: "/import", label: "Import", icon: Upload },
 ];

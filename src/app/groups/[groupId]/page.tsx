@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Users, BookOpen, Plus, X, Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { Users, BookOpen, Plus, X, Loader2, Highlighter, MessageSquare, Trash2 } from "lucide-react";
 
 interface GroupDetail {
   id: string;
@@ -22,6 +23,16 @@ interface GroupDetail {
       _count: { highlights: number };
     };
   }[];
+  highlights: {
+    highlight: {
+      id: string;
+      text: string;
+      page: string | null;
+      location: string | null;
+      book: { id: string; title: string };
+      _count: { comments: number };
+    };
+  }[];
 }
 
 interface UserBook {
@@ -31,13 +42,28 @@ interface UserBook {
   coverUrl: string | null;
 }
 
+interface UserHighlight {
+  id: string;
+  text: string;
+  page: string | null;
+  location: string | null;
+  book: {
+    id: string;
+    title: string;
+  };
+}
+
 export default function GroupDetailPage() {
   const params = useParams();
+  const { data: session } = useSession();
   const [group, setGroup] = useState<GroupDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAddBook, setShowAddBook] = useState(false);
+  const [showAddHighlight, setShowAddHighlight] = useState(false);
   const [userBooks, setUserBooks] = useState<UserBook[]>([]);
+  const [userHighlights, setUserHighlights] = useState<UserHighlight[]>([]);
   const [loadingBooks, setLoadingBooks] = useState(false);
+  const [loadingHighlights, setLoadingHighlights] = useState(false);
   const [adding, setAdding] = useState<string | null>(null);
 
   const reload = () => {
@@ -80,6 +106,47 @@ export default function GroupDetailPage() {
     }
   };
 
+  const openAddHighlight = () => {
+    setShowAddHighlight(true);
+    if (userHighlights.length === 0) {
+      setLoadingHighlights(true);
+      fetch("/api/highlights")
+        .then((r) => r.json())
+        .then((data) => {
+          if (Array.isArray(data)) setUserHighlights(data);
+        })
+        .finally(() => setLoadingHighlights(false));
+    }
+  };
+
+  const addHighlight = async (highlightId: string) => {
+    setAdding(highlightId);
+    try {
+      await fetch(`/api/groups/${params.groupId}/highlights`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ highlightId }),
+      });
+      reload();
+    } finally {
+      setAdding(null);
+    }
+  };
+
+  const removeHighlight = async (highlightId: string) => {
+    setAdding(highlightId);
+    try {
+      await fetch(`/api/groups/${params.groupId}/highlights`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ highlightId }),
+      });
+      reload();
+    } finally {
+      setAdding(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -100,6 +167,11 @@ export default function GroupDetailPage() {
 
   const groupBookIds = new Set(group.books.map((gb) => gb.book.id));
   const availableBooks = userBooks.filter((b) => !groupBookIds.has(b.id));
+  const groupHighlightIds = new Set(group.highlights.map((gh) => gh.highlight.id));
+  const availableHighlights = userHighlights.filter((h) => !groupHighlightIds.has(h.id));
+  const isOwner = !!group.members.find(
+    (m) => m.user.id === session?.user?.id && m.role === "OWNER"
+  );
 
   return (
     <div className="space-y-5">
@@ -267,6 +339,113 @@ export default function GroupDetailPage() {
                   {gb.book._count.highlights} Highlights
                 </span>
               </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Selected Highlights */}
+      <div>
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-white">
+            <Highlighter size={18} />
+            Geteilte Highlights ({group.highlights.length})
+          </h2>
+          <button
+            onClick={openAddHighlight}
+            className="flex shrink-0 items-center gap-1 rounded-lg bg-amber-500 px-2.5 py-1.5 text-xs sm:text-sm sm:px-3 font-medium text-white hover:bg-amber-600"
+          >
+            <Plus size={14} />
+            <span className="hidden sm:inline">Highlight hinzufügen</span>
+            <span className="sm:hidden">Hinzufügen</span>
+          </button>
+        </div>
+
+        {showAddHighlight && (
+          <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/40 dark:bg-amber-900/10">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Wähle einzelne Highlights aus:
+              </p>
+              <button
+                onClick={() => setShowAddHighlight(false)}
+                className="text-zinc-400 hover:text-zinc-600"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            {loadingHighlights ? (
+              <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-400" />
+            ) : availableHighlights.length === 0 ? (
+              <p className="text-sm text-zinc-500">
+                Keine weiteren Highlights verfügbar.
+              </p>
+            ) : (
+              <div className="max-h-72 space-y-2 overflow-y-auto">
+                {availableHighlights.map((h) => (
+                  <button
+                    key={h.id}
+                    onClick={() => addHighlight(h.id)}
+                    disabled={adding === h.id}
+                    className="w-full rounded-lg border border-zinc-200 bg-white p-2.5 text-left transition-colors hover:border-amber-300 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800"
+                  >
+                    <p className="mb-1 text-xs text-zinc-400">{h.book.title}</p>
+                    <p className="line-clamp-2 text-sm text-zinc-700 dark:text-zinc-300">{h.text}</p>
+                    <p className="mt-1 text-xs text-zinc-400">
+                      {h.page ? `S. ${h.page}` : ""} {h.location ?? ""}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {group.highlights.length === 0 ? (
+          <p className="text-sm text-zinc-400">Noch keine einzelnen Highlights geteilt.</p>
+        ) : (
+          <div className="space-y-2">
+            {group.highlights.map((gh) => (
+              <div
+                key={gh.highlight.id}
+                className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900"
+              >
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <Link
+                    href={`/books/${gh.highlight.book.id}`}
+                    className="truncate text-xs font-medium text-zinc-500 hover:text-amber-600 dark:text-zinc-300 dark:hover:text-amber-400"
+                  >
+                    {gh.highlight.book.title}
+                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/books/${gh.highlight.book.id}/highlights/${gh.highlight.id}`}
+                      className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400"
+                    >
+                      <MessageSquare size={12} />
+                      {gh.highlight._count.comments}
+                    </Link>
+                    {isOwner && (
+                      <button
+                        onClick={() => removeHighlight(gh.highlight.id)}
+                        disabled={adding === gh.highlight.id}
+                        className="text-zinc-400 hover:text-red-500 disabled:opacity-50"
+                        title="Highlight entfernen"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <p className="line-clamp-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+                  {gh.highlight.text}
+                </p>
+                <p className="mt-1 text-xs text-zinc-400">
+                  {gh.highlight.page ? `S. ${gh.highlight.page}` : ""}
+                  {gh.highlight.page && gh.highlight.location ? " • " : ""}
+                  {gh.highlight.location ?? ""}
+                </p>
+              </div>
             ))}
           </div>
         )}

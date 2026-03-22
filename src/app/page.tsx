@@ -48,7 +48,10 @@ export default function DashboardPage() {
 
       {/* Stats row */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
-        <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        <Link
+          href="/books"
+          className="rounded-xl border border-zinc-200 bg-white p-4 transition-colors hover:border-amber-300 dark:border-zinc-800 dark:bg-zinc-900"
+        >
           <div className="flex items-center gap-2">
             <Library size={16} className="text-amber-500" />
             <span className="text-xs font-medium text-zinc-500">Bücher</span>
@@ -56,8 +59,11 @@ export default function DashboardPage() {
           <p className="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">
             {loading ? "–" : books.length}
           </p>
-        </div>
-        <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        </Link>
+        <Link
+          href="/highlights"
+          className="rounded-xl border border-zinc-200 bg-white p-4 transition-colors hover:border-amber-300 dark:border-zinc-800 dark:bg-zinc-900"
+        >
           <div className="flex items-center gap-2">
             <TrendingUp size={16} className="text-green-500" />
             <span className="text-xs font-medium text-zinc-500">Highlights</span>
@@ -65,8 +71,11 @@ export default function DashboardPage() {
           <p className="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">
             {loading ? "–" : totalHighlights}
           </p>
-        </div>
-        <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        </Link>
+        <Link
+          href="/books"
+          className="rounded-xl border border-zinc-200 bg-white p-4 transition-colors hover:border-amber-300 dark:border-zinc-800 dark:bg-zinc-900"
+        >
           <div className="flex items-center gap-2">
             <MessageSquare size={16} className="text-blue-500" />
             <span className="text-xs font-medium text-zinc-500">Avg/Buch</span>
@@ -76,7 +85,7 @@ export default function DashboardPage() {
               ? "–"
               : Math.round(totalHighlights / books.length)}
           </p>
-        </div>
+        </Link>
       </div>
 
       {/* Quick actions */}

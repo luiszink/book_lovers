@@ -104,6 +104,7 @@ model Highlight {
   linkedHighlight Highlight? @relation("NoteToHighlight", fields: [linkedHighlightId], references: [id])
   linkedNotes     Highlight[] @relation("NoteToHighlight")
   comments        Comment[]
+  groupHighlights GroupHighlight[]
 
   @@index([bookId])
   @@index([userId])
@@ -151,6 +152,7 @@ model Group {
 
   members GroupMember[]
   books   GroupBook[]
+  highlights GroupHighlight[]
 }
 
 enum GroupRole {
@@ -179,4 +181,16 @@ model GroupBook {
   book  Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
   @@id([groupId, bookId])
+}
+
+model GroupHighlight {
+  groupId     String
+  highlightId String
+  addedAt     DateTime @default(now())
+
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  highlight Highlight @relation(fields: [highlightId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, highlightId])
+  @@index([highlightId])
 }

@@ -37,6 +37,17 @@ export async function GET(
           },
         },
       },
+      highlights: {
+        include: {
+          highlight: {
+            include: {
+              book: { select: { id: true, title: true } },
+              _count: { select: { comments: true } },
+            },
+          },
+        },
+        orderBy: { addedAt: "desc" },
+      },
     },
   });
 

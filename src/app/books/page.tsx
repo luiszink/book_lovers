@@ -51,17 +51,18 @@ export default function BooksPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
           Bibliothek
         </h1>
         <button
           onClick={refreshCovers}
           disabled={refreshing}
-          className="flex items-center gap-1.5 rounded-lg border border-zinc-200 px-2.5 py-1 text-xs text-zinc-500 transition-colors hover:border-amber-300 hover:text-amber-600 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-400"
+          className="flex shrink-0 items-center gap-1.5 rounded-lg border border-zinc-200 px-2 py-1 text-xs text-zinc-500 transition-colors hover:border-amber-300 hover:text-amber-600 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-400"
         >
           <RefreshCw size={14} className={refreshing ? "animate-spin" : ""} />
-          Cover aktualisieren
+          <span className="hidden sm:inline">Cover aktualisieren</span>
+          <span className="sm:hidden">Cover</span>
         </button>
       </div>
 
@@ -88,7 +89,7 @@ export default function BooksPage() {
 
       {/* Grid */}
       {loading ? (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
@@ -115,7 +116,7 @@ export default function BooksPage() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {filtered.map((book) => (
             <Link
               key={book.id}

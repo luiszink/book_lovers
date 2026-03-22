@@ -454,7 +454,7 @@ export function HighlightChat({ highlightId }: { highlightId: string }) {
       {highlight && (
         <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           {/* Sub-header: book context */}
-          <div className="flex items-center gap-2 bg-zinc-50 px-4 py-2 dark:bg-zinc-800/50">
+          <div className="flex items-center gap-2 bg-zinc-50 px-3 py-2 sm:px-4 dark:bg-zinc-800/50">
             {highlight.book.coverUrl ? (
               <img
                 src={highlight.book.coverUrl}
@@ -466,18 +466,18 @@ export function HighlightChat({ highlightId }: { highlightId: string }) {
             )}
             <Link
               href={`/books/${highlight.book.id}`}
-              className="text-xs font-medium text-zinc-500 hover:text-amber-600 dark:text-zinc-400 dark:hover:text-amber-400"
+              className="truncate text-xs font-medium text-zinc-500 hover:text-amber-600 dark:text-zinc-400 dark:hover:text-amber-400"
             >
               {highlight.book.title}
             </Link>
             {highlight.book.author && (
-              <span className="text-xs text-zinc-400">
+              <span className="hidden text-xs text-zinc-400 sm:inline">
                 von {highlight.book.author}
               </span>
             )}
           </div>
 
-          <div className="px-4 py-3">
+          <div className="px-3 py-3 sm:px-4">
             {/* Label */}
             <span className="mb-1.5 inline-block text-[10px] font-bold uppercase tracking-widest text-amber-500">
               Markierte Passage
@@ -581,15 +581,15 @@ export function HighlightChat({ highlightId }: { highlightId: string }) {
       )}
 
       {/* ── Comment Input ─────────────────────────────────────── */}
-      <div className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex gap-2.5">
+      <div className="rounded-xl border border-zinc-200 bg-white p-2.5 sm:p-3 dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="flex gap-2">
           {session?.user && (
             <Avatar
               user={{ name: session.user.name ?? null, image: session.user.image ?? null }}
-              size={28}
+              size={24}
             />
           )}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <textarea
               ref={textareaRef}
               value={newMessage}
@@ -624,14 +624,14 @@ export function HighlightChat({ highlightId }: { highlightId: string }) {
 
       {/* ── Comments Section ──────────────────────────────────── */}
       <div className="rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex items-center gap-1.5 border-b border-zinc-100 px-4 py-2.5 dark:border-zinc-800">
+        <div className="flex items-center gap-1.5 border-b border-zinc-100 px-3 py-2 sm:px-4 sm:py-2.5 dark:border-zinc-800">
           <MessageSquare size={13} className="text-zinc-400" />
           <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
             {commentCount} Kommentar{commentCount !== 1 ? "e" : ""}
           </span>
         </div>
 
-        <div className="px-4 pb-2">
+        <div className="px-3 pb-2 sm:px-4">
           {tree.length === 0 ? (
             <p className="py-6 text-center text-xs text-zinc-400">
               Noch keine Kommentare — starte die Diskussion!

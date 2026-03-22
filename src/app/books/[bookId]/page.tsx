@@ -71,7 +71,7 @@ export default function BookDetailPage() {
       </nav>
 
       {/* Book Header Card */}
-      <div className="flex gap-4 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex gap-3 rounded-xl border border-zinc-200 bg-white p-3 sm:gap-4 sm:p-4 dark:border-zinc-800 dark:bg-zinc-900">
         {/* Cover */}
         <div className="h-24 w-16 shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800">
           {book.coverUrl ? (
@@ -84,7 +84,7 @@ export default function BookDetailPage() {
         </div>
 
         <div className="min-w-0 flex-1">
-          <h1 className="text-lg font-bold leading-snug text-zinc-900 dark:text-white">
+          <h1 className="text-base font-bold leading-snug sm:text-lg text-zinc-900 dark:text-white">
             {book.title}
           </h1>
           {book.author && (

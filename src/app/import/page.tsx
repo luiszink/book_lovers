@@ -77,7 +77,7 @@ export default function ImportPage() {
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-12 transition-colors ${
+        className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 sm:p-12 transition-colors ${
           dragging
             ? "border-amber-400 bg-amber-50 dark:bg-amber-900/10"
             : "border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900"
@@ -109,7 +109,7 @@ export default function ImportPage() {
 
       {/* Selected file */}
       {file && (
-        <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4 dark:border-zinc-800 dark:bg-zinc-900">
           <div className="flex items-center gap-3">
             <FileText size={20} className="text-amber-500" />
             <div>
@@ -145,7 +145,7 @@ export default function ImportPage() {
             <Check size={20} />
             <span className="font-semibold">Import erfolgreich!</span>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             <Stat label="Bücher" value={result.booksCreated} />
             <Stat label="Highlights" value={result.highlightsCreated} />
             <Stat label="Notizen" value={result.notesCreated} />

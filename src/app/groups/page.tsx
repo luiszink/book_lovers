@@ -73,17 +73,17 @@ export default function GroupsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="text-xl font-bold sm:text-2xl text-zinc-900 dark:text-white">
           Gruppen
         </h1>
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 sm:gap-2">
           <button
             onClick={() => {
               setShowJoin(!showJoin);
               setShowCreate(false);
             }}
-            className="rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className="rounded-lg border border-zinc-200 px-2.5 py-1.5 text-xs sm:text-sm sm:px-3 sm:py-2 font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
             Beitreten
           </button>
@@ -92,10 +92,11 @@ export default function GroupsPage() {
               setShowCreate(!showCreate);
               setShowJoin(false);
             }}
-            className="flex items-center gap-1.5 rounded-lg bg-amber-500 px-3 py-2 text-sm font-medium text-white hover:bg-amber-600"
+            className="flex items-center gap-1 rounded-lg bg-amber-500 px-2.5 py-1.5 text-xs sm:text-sm sm:px-3 sm:py-2 font-medium text-white hover:bg-amber-600"
           >
-            <Plus size={16} />
-            Neue Gruppe
+            <Plus size={14} />
+            <span className="hidden sm:inline">Neue Gruppe</span>
+            <span className="sm:hidden">Neu</span>
           </button>
         </div>
       </div>
@@ -180,7 +181,7 @@ export default function GroupsPage() {
           {groups.map((group) => (
             <div
               key={group.id}
-              className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+              className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4 dark:border-zinc-800 dark:bg-zinc-900"
             >
               <div>
                 <h3 className="font-semibold text-zinc-900 dark:text-white">

@@ -11,7 +11,7 @@ export default function HighlightChatPage() {
   const bookId = params.bookId as string;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-3">
+    <div className="mx-auto max-w-3xl space-y-2 sm:space-y-3">
       <nav className="flex items-center gap-1 text-xs text-zinc-400">
         <Link href="/books" className="hover:text-amber-600 dark:hover:text-amber-400">
           Bücher

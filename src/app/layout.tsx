@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Book Lovers",
   description: "Social Reading – Teile Kindle-Highlights mit Freunden",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
 export default function RootLayout({
@@ -32,8 +33,8 @@ export default function RootLayout({
       <body className="min-h-full flex bg-zinc-50 dark:bg-zinc-950">
         <Providers>
           <Sidebar />
-          <main className="flex-1 md:ml-64">
-            <div className="mx-auto max-w-7xl px-4 pt-14 pb-8 sm:px-6 md:px-8 md:pt-6">
+          <main className="flex-1 min-w-0 md:ml-64">
+            <div className="mx-auto max-w-7xl px-3 pt-14 pb-6 sm:px-4 md:px-8 md:pt-6">
               {children}
             </div>
           </main>

@@ -47,7 +47,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
         <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
           <div className="flex items-center gap-2">
             <Library size={16} className="text-amber-500" />
@@ -80,7 +80,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick actions */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
         <Link
           href="/import"
           className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white p-3.5 transition-colors hover:border-amber-300 dark:border-zinc-800 dark:bg-zinc-900"

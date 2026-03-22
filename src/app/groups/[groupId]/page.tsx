@@ -155,17 +155,18 @@ export default function GroupDetailPage() {
 
       {/* Books */}
       <div>
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-3 flex items-center justify-between gap-2">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-white">
             <BookOpen size={18} />
             Bücher ({group.books.length})
           </h2>
           <button
             onClick={openAddBook}
-            className="flex items-center gap-1 rounded-lg bg-amber-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-amber-600"
+            className="flex shrink-0 items-center gap-1 rounded-lg bg-amber-500 px-2.5 py-1.5 text-xs sm:text-sm sm:px-3 font-medium text-white hover:bg-amber-600"
           >
             <Plus size={14} />
-            Buch hinzufügen
+            <span className="hidden sm:inline">Buch hinzufügen</span>
+            <span className="sm:hidden">Hinzufügen</span>
           </button>
         </div>
 

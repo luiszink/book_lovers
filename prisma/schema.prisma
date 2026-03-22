@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── NextAuth Models ──────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts    Account[]
+  sessions    Session[]
+  highlights  Highlight[]
+  comments    Comment[]
+  memberships GroupMember[]
+  commentVotes CommentVote[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// ─── App Models ───────────────────────────────────────────────
+
+model Book {
+  id        String   @id @default(cuid())
+  title     String
+  author    String?
+  coverUrl  String?
+  createdAt DateTime @default(now())
+
+  highlights Highlight[]
+  groupBooks GroupBook[]
+
+  @@unique([title, author])
+}
+
+enum HighlightType {
+  HIGHLIGHT
+  NOTE
+  BOOKMARK
+}
+
+model Highlight {
+  id                String        @id @default(cuid())
+  bookId            String
+  userId            String
+  text              String
+  type              HighlightType @default(HIGHLIGHT)
+  page              String?
+  location          String?
+  kindleTimestamp    String?
+  linkedHighlightId String?
+  importedAt        DateTime      @default(now())
+  createdAt         DateTime      @default(now())
+
+  book            Book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  linkedHighlight Highlight? @relation("NoteToHighlight", fields: [linkedHighlightId], references: [id])
+  linkedNotes     Highlight[] @relation("NoteToHighlight")
+  comments        Comment[]
+
+  @@index([bookId])
+  @@index([userId])
+  @@index([bookId, userId])
+}
+
+model Comment {
+  id          String   @id @default(cuid())
+  highlightId String
+  userId      String
+  text        String
+  parentId    String?
+  createdAt   DateTime @default(now())
+
+  highlight Highlight @relation(fields: [highlightId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  votes     CommentVote[]
+
+  @@index([highlightId])
+  @@index([parentId])
+}
+
+model CommentVote {
+  id        String   @id @default(cuid())
+  commentId String
+  userId    String
+  value     Int      // 1 = upvote, -1 = downvote
+  createdAt DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+}
+
+// ─── Groups ───────────────────────────────────────────────────
+
+model Group {
+  id         String   @id @default(cuid())
+  name       String
+  inviteCode String   @unique
+  createdAt  DateTime @default(now())
+
+  members GroupMember[]
+  books   GroupBook[]
+}
+
+enum GroupRole {
+  OWNER
+  MEMBER
+}
+
+model GroupMember {
+  groupId  String
+  userId   String
+  role     GroupRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, userId])
+}
+
+model GroupBook {
+  groupId String
+  bookId  String
+  addedAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  book  Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, bookId])
+}
